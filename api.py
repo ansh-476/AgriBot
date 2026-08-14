@@ -55,7 +55,7 @@ def chat(request: ChatRequest):
 
     for question in questions:
 
-        results = semantic_search(question, k=10)
+        results = semantic_search(question, k=5)
 
         if not results:
             all_answers.append(
