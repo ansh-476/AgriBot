@@ -105,8 +105,8 @@ Return only the final answer.
                     "content": prompt
                 }
             ],
-            "temperature": 0.2,
-            "max_tokens": 175,
+            "temperature": 0.3,
+            "max_tokens": 195,
             "stream": False,
             "chat_template_kwargs": {
                 "enable_thinking": False
