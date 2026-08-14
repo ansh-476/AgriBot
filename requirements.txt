@@ -1,0 +1,9 @@
+duckdb
+pandas
+python-dotenv
+langchain-core
+langchain-nvidia-ai-endpoints
+langchain-chroma
+langchain-huggingface
+sentence-transformers
+chromadb
