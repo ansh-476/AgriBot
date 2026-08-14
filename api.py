@@ -106,7 +106,7 @@ Return only the final answer.
                 }
             ],
             "temperature": 0.2,
-            "max_tokens": 125,
+            "max_tokens": 175,
             "stream": False,
             "chat_template_kwargs": {
                 "enable_thinking": False
