@@ -211,39 +211,17 @@
         <h3
           class="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2 ml-2"
         >
-          Recent Queries
+          Recent Queries Asked
         </h3>
 
-        <div
-          class="neu-inset-sm p-4 cursor-pointer hover:text-[var(--accent)] transition-colors"
-        >
-          <div class="flex items-center gap-3">
-            <i class="fa-solid fa-droplet text-sm text-[var(--accent)]"></i>
-            <p class="text-sm font-semibold truncate">Irrigation Schedule Q3</p>
-          </div>
-        </div>
+        <div id="recent-queries" class="flex flex-col gap-4"></div>
 
-        <div
-          class="neu-raised-sm p-4 cursor-pointer hover:text-[var(--accent)] transition-colors"
+        <p
+          id="no-history"
+          class="text-xs text-[var(--text-muted)] text-center py-6" 
         >
-          <div class="flex items-center gap-3">
-            <i class="fa-solid fa-bug text-sm text-[var(--text-muted)]"></i>
-            <p class="text-sm font-semibold truncate">Tomato Blight Symptoms</p>
-          </div>
-        </div>
-
-        <div
-          class="neu-raised-sm p-4 cursor-pointer hover:text-[var(--accent)] transition-colors"
-        >
-          <div class="flex items-center gap-3">
-            <i
-              class="fa-solid fa-chart-line text-sm text-[var(--text-muted)]"
-            ></i>
-            <p class="text-sm font-semibold truncate">
-              Wheat Market Trends 2026
-            </p>
-          </div>
-        </div>
+          Your recent questions will appear here.
+        </p>
       </div>
 
       <!-- User Profile Area -->
@@ -257,7 +235,7 @@
             <i class="fa-solid fa-user-tractor text-[var(--text-muted)]"></i>
           </div>
           <div>
-            <p class="text-sm font-bold">Admin Farmer</p>
+            <p class="text-sm font-bold">User</p>
             <p class="text-xs text-[var(--text-muted)]">Premium Plan</p>
           </div>
         </div>
@@ -467,7 +445,61 @@
         chatInput.value = text;
         chatInput.focus();
       }
+      const recentQueries = document.getElementById("recent-queries");
+      const noHistory = document.getElementById("no-history");
 
+      function loadRecentQueries() {
+        const history = JSON.parse(
+          localStorage.getItem("agri_history") || "[]",
+        );
+
+        recentQueries.innerHTML = "";
+
+        if (history.length === 0) {
+          noHistory.style.display = "block";
+          return;
+        }
+
+        noHistory.style.display = "none";
+
+        history.forEach((query, index) => {
+          const item = document.createElement("button");
+
+          item.className =
+            "neu-raised-sm p-4 rounded-2xl text-left cursor-pointer hover:text-[var(--accent)] transition-all hover:-translate-y-1 w-full";
+
+          item.innerHTML = `
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-leaf text-sm text-[var(--accent)]"></i>
+                <p class="text-sm font-semibold truncate"></p>
+            </div>
+        `;
+
+          item.querySelector("p").textContent = query;
+
+          item.onclick = () => {
+            chatInput.value = query;
+            chatInput.focus();
+            chatForm.requestSubmit();
+          };
+
+          recentQueries.appendChild(item);
+        });
+      }
+
+      function saveRecentQuery(query) {
+        let history = JSON.parse(localStorage.getItem("agri_history") || "[]");
+
+        history = history.filter((q) => q !== query);
+
+        history.unshift(query);
+
+        history = history.slice(0, 6);
+
+        localStorage.setItem("agri_history", JSON.stringify(history));
+
+        loadRecentQueries();
+      }
       // Clear chat to start fresh
       function startNewChat() {
         chatContainer.innerHTML = "";
@@ -554,6 +586,7 @@
 
         // 1. Add User Message
         addMessage(text, true);
+        saveRecentQuery(text);
         chatInput.value = "";
 
         // 2. Show Typing Indicator
@@ -564,6 +597,7 @@
         // 3. Trigger Backend API request
         generateBotResponse(text);
       });
+      loadRecentQueries();
     </script>
   </body>
 </html>
